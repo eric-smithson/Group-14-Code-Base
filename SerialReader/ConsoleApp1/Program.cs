@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.ComponentModel;
 
 namespace ConsoleApp1
 {
@@ -11,17 +12,28 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            ClassLibrary1.MyUtilities m = new ClassLibrary1.MyUtilities();
-            m.SetData();
-            ClassLibrary1.MyUtilities.data r = m.GetData();
+            Console.WriteLine("beginning program");
+            ClassLibrary1.PiReader m = new ClassLibrary1.PiReader();
             
-            Console.WriteLine(r.accelx);
-            Console.WriteLine(r.accely);
-            Console.WriteLine(r.accelz);
+            while (true)
+            {
+                Console.WriteLine("Press Enter to read bits:");
+                ClassLibrary1.PiReader.data r = m.GetData();
+                Console.ReadLine();
+                Console.WriteLine("{0}", r.gyrox);
+                Console.WriteLine("{0}", r.gyroy);
+                Console.WriteLine("{0}", r.gyroz);
+                
+                Console.WriteLine("{0}", r.accelx);
+                Console.WriteLine("{0}", r.accely);
+                Console.WriteLine("{0}", r.accelz);
+            }
 
-            Console.WriteLine(r.gyrox );
-            Console.WriteLine(r.gyroy );
-            Console.WriteLine(r.gyroz );
+        }
+
+        private static void Thread_DoWork(object sender, DoWorkEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

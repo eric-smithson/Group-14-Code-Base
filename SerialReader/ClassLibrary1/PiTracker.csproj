@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeadTracker.cs" />
+    <Compile Include="Calibration\Multilaterier.cs" />
     <Compile Include="PiReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

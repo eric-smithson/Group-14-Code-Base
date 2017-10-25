@@ -43,5 +43,4 @@ namespace ClassLibrary1
             this.Z = z;
         }
     }
-
 }

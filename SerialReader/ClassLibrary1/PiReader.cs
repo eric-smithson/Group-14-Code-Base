@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using static System.IO.TextWriter;
 using System.ComponentModel;
 using System.Threading;
 using System.IO.Ports;
-using UnityEngine;
-using System.Collections;
 
 namespace ClassLibrary1
 {
@@ -20,27 +16,12 @@ namespace ClassLibrary1
 
         public struct data
         {
-            public byte gyrox;
-            public byte gyroz;
-            public byte gyroy;
-
-            public byte accelx;
-            public byte accely;
-            public byte accelz;
         }
 
         public data GetData()
         {
             data stuff = new data()
             {
-                // This is the same order I expect to receive the bytes in
-                gyrox  = b[0],
-                gyroy  = b[1],
-                gyroz  = b[2],
-
-                accelx = b[3],
-                accely = b[4],
-                accelz = b[5],
             };
             return stuff;
         }
@@ -83,27 +64,19 @@ namespace ClassLibrary1
         private void Data_Getter(object sender, DoWorkEventArgs e)
         {
             List<byte> bytes = new List<byte>();
-            bool command = false;
             while(true)
             {
                 // bytes read in are added to an array list
                 // they are popped off that array list once a command is recognized
                 com.Read(b, 0, 1);
-                if (b[0] == 0x00 && command == false)
-                {
-                    // beginning of command
-                    command = true;
-                    continue;
-                }
-                if (b[0] == 0x00 && command == true)
+                if (b[0] == 0x00)
                 {
                     // end of command
-                    command = false;
                     ExecuteCommand(bytes);
                     bytes.Clear();
                     continue;
                 }
-                if (command == true)
+                else
                 {
                     bytes.Add(b[0]);
                 }
@@ -111,6 +84,7 @@ namespace ClassLibrary1
         }
     private void ExecuteCommand(List<byte> bytes)
         {
+            bytes = Consistent_Overhead_Byte_Stuffing.COBS.Decode(bytes).ToList<byte>();
             foreach(byte by in bytes)
             {
                 Console.Write(by);

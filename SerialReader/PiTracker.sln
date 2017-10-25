@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiTracker", "ClassLibrary1\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{1C5FE6B8-7046-4E3F-B5D5-151D9407A293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiTrackerTest", "PiTrackerTest\PiTrackerTest.csproj", "{7AE53171-C6CC-4371-BCD3-2A4CE126A4F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}")                                                               = "PiTrackerTest", "PiTrackerTest\PiTrackerTest.csproj", "{7AE53171-C6CC-4371-BCD3-2A4CE126A4F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

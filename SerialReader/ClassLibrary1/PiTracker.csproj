@@ -45,8 +45,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="COBS.cs" />
     <Compile Include="HeadTracker.cs" />
+    <Compile Include="ISerial.cs" />
     <Compile Include="PiReader.cs" />
+    <Compile Include="PiSerial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

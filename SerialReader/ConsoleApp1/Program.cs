@@ -13,7 +13,7 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             Console.WriteLine("beginning program");
-            ClassLibrary1.PiReader m = new ClassLibrary1.PiReader();
+            ClassLibrary1.PiReader m = new ClassLibrary1.PiReader(new ClassLibrary1.PiSerial());
             
             while (true)
             {

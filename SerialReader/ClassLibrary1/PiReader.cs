@@ -9,7 +9,7 @@ namespace ClassLibrary1
 {
     public class PiReader
     {
-        SerialPort com;
+        ISerial pi;
         byte[] b = new byte[8];
         Thread thread;
         char[] char_array;
@@ -27,32 +27,15 @@ namespace ClassLibrary1
         }
 
         
-        public PiReader()
+        public PiReader(ISerial piSerial)
         {
-            Console.WriteLine("setting up serial reader");
-
-            com = new SerialPort();
-            com.PortName = "COM7";
-            com.BaudRate = 115200;
-            com.DataBits = 8;
-            com.Parity = Parity.None;
-            com.StopBits = StopBits.One;
-
-            // virtual config
-            // com.PortName = "COM4";
-            // com.BaudRate = 115200;
-            // com.DataBits = 8;
-            // com.Parity = Parity.None;
-            // com.StopBits = StopBits.One;
-            
-            Console.WriteLine(com);
-            com.Open();
+            pi = piSerial;
 
             byte[] a = Enumerable.Range(0, 16).Select(i => (byte) i).ToArray();
             Console.WriteLine("reading bytes");
-            com.Write(a, 0, 16);
+            pi.Write(a, 0, 16);
             byte[] by = new byte[16];
-            com.Read(by, 0, 16);
+            pi.Read(by, 0, 16);
 
             
             BackgroundWorker thread = new BackgroundWorker();
@@ -68,7 +51,7 @@ namespace ClassLibrary1
             {
                 // bytes read in are added to an array list
                 // they are popped off that array list once a command is recognized
-                com.Read(b, 0, 1);
+                pi.Read(b, 0, 1);
                 if (b[0] == 0x00)
                 {
                     // end of command

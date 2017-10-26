@@ -59,7 +59,7 @@ namespace PiTracker
 
         public HeadTracker(ISerial serial)
         {
-            piReader = new PiReader(serial);
+            piReader = new PiReader(this, serial);
         }
 
         public void StartDistortionCalibration(int cameraNumber)
@@ -87,12 +87,18 @@ namespace PiTracker
 
         }
 
-        void UpdatePosition(float le_x, float le_y, float le_z,
-        float re_x, float re_y, float re_z)
+        public void UpdatePosition(float le_x, float le_y, float le_z,
+            float re_x, float re_y, float re_z)
         {
             PositionDataEventArgs pdArgs = new PositionDataEventArgs(le_x, le_y,
                 le_z, re_x, re_y, re_z);
             PositionDataUpdate?.BeginInvoke(this, pdArgs, null, null);
+        }
+
+        public void ReceiveOutput(string output)
+        {
+            OutputEventArgs oArgs = new OutputEventArgs(output);
+            Output?.BeginInvoke(this, oArgs, null, null);
         }
     }
 }

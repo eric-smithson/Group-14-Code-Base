@@ -64,27 +64,56 @@ namespace PiTracker
 
         public void StartDistortionCalibration(int cameraNumber)
         {
-
+            piReader.WriteCommand(
+                PiReader.Commands.CameraDistortionCalibration,
+                new List<byte>((byte)cameraNumber));
         }
 
-        public void AddCalibrationPoint(Vector3 point, float[] quater)
+        public void AddCalibrationPoint(Vector3 point, float[] quater) // quater is size 4
         {
+            List<byte> temp1 = new List<byte>();
 
+            temp1.AddRange(BitConverter.GetBytes(point.x));
+            temp1.AddRange(BitConverter.GetBytes(point.y));
+            temp1.AddRange(BitConverter.GetBytes(point.z));
+
+            byte[,] send = new byte[quater.Length, 4];
+            for (int i = 0; i < quater.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(quater[i]);
+
+                for (int j = 0; j < 4; j++)
+                    send[i, j] = temp[j];
+            }
+
+            for (int i = 0; i < send.Length; i++)
+            {
+                byte[] row = Enumerable.Range(0, send.Rank)
+                    .Select(column => send[i, column]).ToArray();
+                temp1.AddRange(row);
+            }
+
+            piReader.WriteCommand(PiReader.Commands.AddCalibrationPoint, temp1);
         }
 
         public void ResetPositionalCalibration()
         {
-
+            piReader.WriteCommand(PiReader.Commands.ResetPositional, new List<byte>());
         }
 
         public long FavoriteNumber()
         {
-            return 0xDEADBEEF;
+            return 0xB00B1E5;
         }
 
         public void SetEyeDistance(float dis)
         {
+            // TODO: Fill in function, call PiReader
+            byte[] bdis = BitConverter.GetBytes(dis);
 
+            piReader.WriteCommand(
+                PiReader.Commands.SetEyeDistance, 
+                new List<byte>(bdis));
         }
 
         // receives from rpi, triggers event in unity

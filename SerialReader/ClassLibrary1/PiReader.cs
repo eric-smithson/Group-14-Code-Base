@@ -4,7 +4,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Threading;
 using System.IO.Ports;
-
+using System.Diagnostics;
 
 namespace PiTracker
 {
@@ -16,27 +16,14 @@ namespace PiTracker
         char[] char_array;
         HeadTracker ht;
 
-        enum Commands { CameraDistortionCalibration = 0x01,
+        public enum Commands { CameraDistortionCalibration = 0x01,
                         ResetPositional = 0x02,
                         SetEyeDistance = 0x03,
                         AddCalibrationPoint = 0x04,
                         OutputConsole = 0x05,
-                        PositionData = 0x06,
+                        UpdatePositionData = 0x06,
                       }
 
-        public struct data
-        {
-        }
-
-        public data GetData()
-        {
-            data stuff = new data()
-            {
-            };
-            return stuff;
-        }
-
-        
         public PiReader(HeadTracker ht, ISerial piSerial)
         {
             pi = piSerial;
@@ -66,7 +53,7 @@ namespace PiTracker
                 if (b[0] == 0x00)
                 {
                     // end of command
-                    ExecuteCommand(bytes);
+                    ReadCommand(bytes);
                     bytes.Clear();
                     continue;
                 }
@@ -76,7 +63,7 @@ namespace PiTracker
                 }
             }
         }
-    private void ExecuteCommand(List<byte> bytes)
+    private void ReadCommand(List<byte> bytes)
         {
             bytes = Consistent_Overhead_Byte_Stuffing.COBS.Decode(bytes).ToList<byte>();
             foreach(byte by in bytes)
@@ -87,21 +74,22 @@ namespace PiTracker
             Commands type = (Commands)bytes[0];
             switch (type)
             {
-                case Commands.CameraDistortionCalibration:
-                    int camera = (int)bytes[1];
-                    ht.StartDistortionCalibration(camera);
-                    break;
-                case Commands.ResetPositional:
-                    ht.ResetPositionalCalibration();
-                    break;
-                case Commands.SetEyeDistance:
-                    System.Single distance = System.BitConverter(bytes, 1);
-                    break;
                 case Commands.OutputConsole:
+                    Debug.WriteLine(bytes);
                     break;
-                case Commands.PositionData:
+                case Commands.UpdatePositionData:
+                    break;
+                default:
+                    Debug.WriteLine("Command not found");
                     break;
             }
+        }
+        public void WriteCommand(Commands type, List<byte> data)
+        {
+            data.Insert(0, (byte)type);
+            data = Consistent_Overhead_Byte_Stuffing.COBS.Decode(data).ToList<byte>();
+            data.Add(0x00);
+            pi.Write(data.ToArray(), 0, data.Count);
         }
     }
 }

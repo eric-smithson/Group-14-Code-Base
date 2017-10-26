@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.IO.Ports;
 
-namespace ClassLibrary1
+namespace PiTracker
 {
     public class PiReader
     {

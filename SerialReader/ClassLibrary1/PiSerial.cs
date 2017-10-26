@@ -5,7 +5,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 
-namespace ClassLibrary1
+namespace PiTracker
 {
     public class PiSerial : ISerial, IDisposable
     {

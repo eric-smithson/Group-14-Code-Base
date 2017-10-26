@@ -87,6 +87,7 @@ namespace PiTracker
 
         }
 
+        // receives from rpi, triggers event in unity
         public void UpdatePosition(float le_x, float le_y, float le_z,
             float re_x, float re_y, float re_z)
         {
@@ -95,6 +96,7 @@ namespace PiTracker
             PositionDataUpdate?.BeginInvoke(this, pdArgs, null, null);
         }
 
+        // receives from rpi, triggers event here
         public void ReceiveOutput(string output)
         {
             OutputEventArgs oArgs = new OutputEventArgs(output);

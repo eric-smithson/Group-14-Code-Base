@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.IO.Ports;
 
+
 namespace PiTracker
 {
     public class PiReader
@@ -13,11 +14,15 @@ namespace PiTracker
         byte[] b = new byte[8];
         Thread thread;
         char[] char_array;
+        HeadTracker ht;
 
-        enum Commands { CameraDistortionCalibration,
-                        ResetPositional,
-                        SetEyeDistance,
-                        OutputConsole}
+        enum Commands { CameraDistortionCalibration = 0x01,
+                        ResetPositional = 0x02,
+                        SetEyeDistance = 0x03,
+                        AddCalibrationPoint = 0x04,
+                        OutputConsole = 0x05,
+                        PositionData = 0x06,
+                      }
 
         public struct data
         {
@@ -32,7 +37,7 @@ namespace PiTracker
         }
 
         
-        public PiReader(ISerial piSerial)
+        public PiReader(HeadTracker ht, ISerial piSerial)
         {
             pi = piSerial;
 
@@ -42,6 +47,7 @@ namespace PiTracker
             byte[] by = new byte[16];
             pi.Read(by, 0, 16);
 
+            this.ht = ht;
             
             BackgroundWorker thread = new BackgroundWorker();
             thread.DoWork += Data_Getter;
@@ -78,6 +84,24 @@ namespace PiTracker
                 Console.Write(by);
             }
             Console.WriteLine();
+            Commands type = (Commands)bytes[0];
+            switch (type)
+            {
+                case Commands.CameraDistortionCalibration:
+                    int camera = (int)bytes[1];
+                    ht.StartDistortionCalibration(camera);
+                    break;
+                case Commands.ResetPositional:
+                    ht.ResetPositionalCalibration();
+                    break;
+                case Commands.SetEyeDistance:
+                    System.Single distance = System.BitConverter(bytes, 1);
+                    break;
+                case Commands.OutputConsole:
+                    break;
+                case Commands.PositionData:
+                    break;
+            }
         }
     }
 }

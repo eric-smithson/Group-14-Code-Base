@@ -14,6 +14,11 @@ namespace ClassLibrary1
         Thread thread;
         char[] char_array;
 
+        enum Commands { CameraDistortionCalibration,
+                        ResetPositional,
+                        SetEyeDistance,
+                        OutputConsole}
+
         public struct data
         {
         }

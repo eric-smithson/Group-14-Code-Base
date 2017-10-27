@@ -71,11 +71,11 @@ namespace PiTracker
 
         public void AddCalibrationPoint(Vector3 point, float[] quater) // quater is size 4
         {
-            List<byte> temp1 = new List<byte>();
+            List<byte> b_command = new List<byte>();
 
-            temp1.AddRange(BitConverter.GetBytes(point.x));
-            temp1.AddRange(BitConverter.GetBytes(point.y));
-            temp1.AddRange(BitConverter.GetBytes(point.z));
+            b_command.AddRange(BitConverter.GetBytes(point.x));
+            b_command.AddRange(BitConverter.GetBytes(point.y));
+            b_command.AddRange(BitConverter.GetBytes(point.z));
 
             byte[,] send = new byte[quater.Length, 4];
             for (int i = 0; i < quater.Length; i++)
@@ -90,10 +90,10 @@ namespace PiTracker
             {
                 byte[] row = Enumerable.Range(0, send.Rank)
                     .Select(column => send[i, column]).ToArray();
-                temp1.AddRange(row);
+                b_command.AddRange(row);
             }
 
-            piReader.WriteCommand(PiReader.Commands.AddCalibrationPoint, temp1);
+            piReader.WriteCommand(PiReader.Commands.AddCalibrationPoint, b_command);
         }
 
         public void ResetPositionalCalibration()
@@ -117,16 +117,30 @@ namespace PiTracker
         }
 
         // receives from rpi, triggers event in unity
-        public void UpdatePosition(float le_x, float le_y, float le_z,
-            float re_x, float re_y, float re_z)
+        public void UpdatePosition(List<byte> bytes)
+
         {
-            PositionDataEventArgs pdArgs = new PositionDataEventArgs(le_x, le_y,
-                le_z, re_x, re_y, re_z);
+            if (bytes.Count != 24) {
+                System.Diagnostics.Debug.WriteLine("Incorrect amount of bytes sent");
+            }
+            float le_x, le_y, le_z, re_x, re_y, re_z;
+            byte[] b_arr = bytes.ToArray();
+
+            le_x = BitConverter.ToSingle(b_arr, 0);
+            le_y = BitConverter.ToSingle(b_arr, 4);
+            le_z = BitConverter.ToSingle(b_arr, 8);
+            re_x = BitConverter.ToSingle(b_arr, 12);
+            re_y = BitConverter.ToSingle(b_arr, 16);
+            re_z = BitConverter.ToSingle(b_arr, 20);
+
+            PositionDataEventArgs pdArgs = new PositionDataEventArgs(le_x, le_y, le_z, re_x, re_y, re_z);
             PositionDataUpdate?.BeginInvoke(this, pdArgs, null, null);
         }
 
-        public void ReceiveOutput(string output)
+        public void ReceiveOutput(List<byte> bytes)
         {
+
+            string output = System.Text.Encoding.ASCII.GetString(bytes.ToArray());
             OutputEventArgs oArgs = new OutputEventArgs(output);
             Output?.BeginInvoke(this, oArgs, null, null);
         }

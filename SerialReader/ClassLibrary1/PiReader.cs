@@ -16,20 +16,21 @@ namespace PiTracker
         char[] char_array;
         HeadTracker ht;
 
-        public enum Commands { CameraDistortionCalibration = 0x01,
-                        ResetPositional = 0x02,
-                        SetEyeDistance = 0x03,
-                        AddCalibrationPoint = 0x04,
-                        OutputConsole = 0x05,
-                        UpdatePositionData = 0x06,
-                      }
+        public enum Commands {
+                                CameraDistortionCalibration = 0x01,
+                                ResetPositional = 0x02,
+                                SetEyeDistance = 0x03,
+                                AddCalibrationPoint = 0x04,
+                                OutputConsole = 0x05,
+                                UpdatePositionData = 0x06,
+                             }
 
         public PiReader(HeadTracker ht, ISerial piSerial)
         {
             pi = piSerial;
 
             byte[] a = Enumerable.Range(0, 16).Select(i => (byte) i).ToArray();
-            Console.WriteLine("reading bytes");
+            Debug.WriteLine("reading bytes");
             pi.Write(a, 0, 16);
             byte[] by = new byte[16];
             pi.Read(by, 0, 16);
@@ -72,12 +73,14 @@ namespace PiTracker
             }
             Console.WriteLine();
             Commands type = (Commands)bytes[0];
+            bytes.RemoveAt(0);
             switch (type)
             {
                 case Commands.OutputConsole:
-                    Debug.WriteLine(bytes);
+                    ht.ReceiveOutput(bytes);
                     break;
                 case Commands.UpdatePositionData:
+                    ht.UpdatePosition(bytes);
                     break;
                 default:
                     Debug.WriteLine("Command not found");

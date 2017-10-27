@@ -41,11 +41,17 @@ namespace PiTracker
 
         public int Read(byte[] buffer, int offset, int count)
         {
+            if (!com.IsOpen)
+                return 0;
+
             return com.Read(buffer, offset, count);
         }
 
         public void Write(byte[] buffer, int offset, int count)
         {
+            if (!com.IsOpen)
+                return;
+
             com.Write(buffer, offset, count);
         }
 

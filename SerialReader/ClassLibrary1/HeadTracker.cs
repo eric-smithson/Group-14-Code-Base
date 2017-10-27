@@ -125,7 +125,6 @@ namespace PiTracker
             PositionDataUpdate?.BeginInvoke(this, pdArgs, null, null);
         }
 
-        // receives from rpi, triggers event here
         public void ReceiveOutput(string output)
         {
             OutputEventArgs oArgs = new OutputEventArgs(output);

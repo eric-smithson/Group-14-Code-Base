@@ -75,10 +75,10 @@ namespace PiTracker
             switch (type)
             {
                 case Commands.OutputConsole:
-                    Debug.WriteLine(bytes);
+                    ht.ReceiveOutput(System.Text.Encoding.ASCII.GetString(bytes.ToArray()));
                     break;
                 case Commands.UpdatePositionData:
-                    break;
+                    ht.UpdatePosition();
                 default:
                     Debug.WriteLine("Command not found");
                     break;

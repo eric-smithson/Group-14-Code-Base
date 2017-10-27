@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PiTrackerTest.Mocks
 {
     class MockSerial : ISerial
     {
-        public byte[] readByteBuffer = new byte[0];
+        public List<byte> readByteBuffer = new List<byte>();
 
         public class BytesWrittenEventArgs : EventArgs
         {
@@ -25,13 +26,17 @@ namespace PiTrackerTest.Mocks
         public int Read(byte[] buffer, int offset, int count)
         {
             // Make sure we are not requesting more than the current buffer can supply
-            int bytesToRead = Math.Min(readByteBuffer.Length, count);
+            while (readByteBuffer.Count < count)
+            {
+                Thread.Sleep(0);
+            }
 
             // Copy data to buffer
-            buffer = new byte[bytesToRead];
-            readByteBuffer.CopyTo(buffer, 0);
+            readByteBuffer.Take(count).ToArray().CopyTo(buffer, offset);
+            readByteBuffer = readByteBuffer.Skip(count).ToList();
 
-            return bytesToRead;
+
+            return count;
         }
 
         public void Write(byte[] buffer, int offset, int count)
@@ -45,11 +50,7 @@ namespace PiTrackerTest.Mocks
 
         public void GiveReadBytes(byte[] bytesToRead)
         {
-            // Resize readByteBuffer and append new data
-            byte[] temp = new byte[bytesToRead.Length + readByteBuffer.Length];
-            readByteBuffer.CopyTo(temp, 0);
-            bytesToRead.CopyTo(temp, readByteBuffer.Length);
-            readByteBuffer = temp;
+            readByteBuffer.AddRange(bytesToRead);
         }
     }
 }

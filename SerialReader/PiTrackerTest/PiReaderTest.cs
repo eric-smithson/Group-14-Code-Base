@@ -41,11 +41,11 @@ namespace PiTrackerTest
 
             serial.GiveReadBytes(sendBytes.ToArray());
 
-            Thread.Sleep(50); // Wait 50 ms
+            Thread.Sleep(500); // Wait 50 ms
 
             Assert.AreEqual(1, receivedEvents.Count);
             Assert.AreEqual(leftEye, receivedEvents[0].LeftEye);
-            Assert.AreEqual(leftEye, receivedEvents[0].RightEye);
+            Assert.AreEqual(rightEye, receivedEvents[0].RightEye);
         }
     }
 }

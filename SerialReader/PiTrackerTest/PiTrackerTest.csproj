@@ -36,8 +36,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\ClassLibrary1\bin\Debug\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UnityDLL\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>

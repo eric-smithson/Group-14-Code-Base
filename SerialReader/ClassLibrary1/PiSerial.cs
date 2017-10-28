@@ -11,6 +11,12 @@ namespace PiTracker
     {
         SerialPort com;
 
+        private enum COMSettings
+        {
+            Virtual,
+            RPI,
+        }
+
         public PiSerial()
         {
             OpenCom();
@@ -20,23 +26,35 @@ namespace PiTracker
         {
             Debug.WriteLine("Setting up serial reader");
 
-            com = new SerialPort();
-            com.PortName = "COM7";
-            com.BaudRate = 115200;
-            com.DataBits = 8;
-            com.Parity = Parity.None;
-            com.StopBits = StopBits.One;
-
-            // virtual config
-            // com.PortName = "COM4";
-            // com.BaudRate = 115200;
-            // com.DataBits = 8;
-            // com.Parity = Parity.None;
-            // com.StopBits = StopBits.One;
+            com = makeCOM(COMSettings.RPI);
 
             com.Open();
 
             Debug.WriteLine(com);
+        }
+        
+        private SerialPort makeCOM(COMSettings s)
+        {
+            com = new SerialPort();
+            if (s == COMSettings.RPI)
+            {
+                com.PortName = "COM6";
+                com.BaudRate = 115200;
+                com.DataBits = 8;
+                com.Parity = Parity.None;
+                com.StopBits = StopBits.One;
+
+            }
+            if (s == COMSettings.Virtual)
+            {
+                com.PortName = "COM4";
+                com.BaudRate = 115200;
+                com.DataBits = 8;
+                com.Parity = Parity.None;
+                com.StopBits = StopBits.One;
+            }
+
+            return com;
         }
 
         public int Read(byte[] buffer, int offset, int count)

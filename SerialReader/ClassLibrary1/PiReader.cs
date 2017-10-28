@@ -8,12 +8,11 @@ using System.Diagnostics;
 
 namespace PiTracker
 {
+    // PiReader Class has methods to read from the Pi
     public class PiReader
     {
         ISerial pi;
         byte[] b = new byte[8];
-        Thread thread;
-        char[] char_array;
         HeadTracker ht;
 
         public enum Commands {
@@ -30,9 +29,10 @@ namespace PiTracker
             pi = piSerial;
 
             byte[] a = Enumerable.Range(0, 16).Select(i => (byte) i).ToArray();
-            Debug.WriteLine("reading bytes");
+            Debug.WriteLine("writing bytes");
             pi.Write(a, 0, 16);
             byte[] by = new byte[16];
+            Debug.WriteLine("reading bytes");
             pi.Read(by, 0, 16);
 
             this.ht = ht;
@@ -40,7 +40,6 @@ namespace PiTracker
             BackgroundWorker thread = new BackgroundWorker();
             thread.DoWork += Data_Getter;
             thread.RunWorkerAsync();
-            
         }
 
         private void Data_Getter(object sender, DoWorkEventArgs e)

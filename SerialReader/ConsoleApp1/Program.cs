@@ -13,20 +13,24 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             Console.WriteLine("beginning program");
-            PiTracker.PiReader m = new PiTracker.PiReader(new PiTracker.PiSerial());
+            PiTracker.PiSerial ps = new PiTracker.PiSerial();
+            PiTracker.PiReader m = new PiTracker.PiReader(new PiTracker.HeadTracker(ps), ps);
+
+
+            byte[] buffer = new byte[16];
+            byte[] a = Enumerable.Range(0, 16).Select(i => (byte) i).ToArray();
+            ps.Write(a, 0, 16);
+            ps.Read(buffer, 0, 16);
             
+            for(int i = 0; i < 16; i++)
+            {
+                Console.Write(buffer[i]);
+            }
+            Console.WriteLine();
+
             while (true)
             {
                 Console.WriteLine("Press Enter to read bits:");
-                PiTracker.PiReader.data r = m.GetData();
-                Console.ReadLine();
-                Console.WriteLine("{0}", r.gyrox);
-                Console.WriteLine("{0}", r.gyroy);
-                Console.WriteLine("{0}", r.gyroz);
-                
-                Console.WriteLine("{0}", r.accelx);
-                Console.WriteLine("{0}", r.accely);
-                Console.WriteLine("{0}", r.accelz);
             }
 
         }

@@ -108,7 +108,6 @@ namespace PiTracker
 
         public void SetEyeDistance(float dis)
         {
-            // TODO: Fill in function, call PiReader
             byte[] bdis = BitConverter.GetBytes(dis);
 
             piReader.WriteCommand(
@@ -139,7 +138,6 @@ namespace PiTracker
 
         public void ReceiveOutput(List<byte> bytes)
         {
-
             string output = System.Text.Encoding.ASCII.GetString(bytes.ToArray());
             OutputEventArgs oArgs = new OutputEventArgs(output);
             Output?.BeginInvoke(this, oArgs, null, null);

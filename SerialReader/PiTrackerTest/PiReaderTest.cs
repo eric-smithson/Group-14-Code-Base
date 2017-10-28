@@ -7,6 +7,8 @@ using UnityEngine;
 using System.Threading;
 using Consistent_Overhead_Byte_Stuffing;
 using System.Linq;
+using System.Text;
+
 
 namespace PiTrackerTest
 {
@@ -41,11 +43,66 @@ namespace PiTrackerTest
 
             serial.GiveReadBytes(sendBytes.ToArray());
 
-            Thread.Sleep(500); // Wait 50 ms
+            Thread.Sleep(50); // Wait 50 ms
 
             Assert.AreEqual(1, receivedEvents.Count);
             Assert.AreEqual(leftEye, receivedEvents[0].LeftEye);
             Assert.AreEqual(rightEye, receivedEvents[0].RightEye);
+        }
+
+        [TestMethod]
+        public void TestOutput()
+        {
+            MockSerial serial = new MockSerial();
+            HeadTracker tracker = new HeadTracker(serial);
+            var outputEvents = new List<HeadTracker.OutputEventArgs>();
+            tracker.Output += (sender, e) =>
+            {
+                outputEvents.Add(e);
+            };
+
+            string expected = "testing, 123";
+            List<byte> sendBytes = new List<byte>();
+            sendBytes.Add((byte)PiReader.Commands.OutputConsole);
+            sendBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(expected));
+            sendBytes = COBS.Encode(sendBytes).ToList();
+            sendBytes.Add(0);
+
+            Assert.AreEqual(0, outputEvents.Count);
+
+            serial.GiveReadBytes(sendBytes.ToArray());
+
+            Thread.Sleep(50); // Wait 50 ms
+
+            Assert.AreEqual(1, outputEvents.Count);
+            Assert.AreEqual(expected, outputEvents[0].Output);
+        }
+
+        [TestMethod]
+        public void TestSetEyeDistance()
+        {
+            MockSerial serial = new MockSerial();
+            HeadTracker tracker = new HeadTracker(serial);
+            var writtenEvents = new List<MockSerial.BytesWrittenEventArgs>();
+            serial.OnBytesWritten += (sender, e) =>
+            {
+                writtenEvents.Add(e);
+            };
+
+            float expected = 50.0f;
+            /*List<byte> expectedBytes = new List<byte>();
+            sendBytes.Add((byte)PiReader.Commands.);
+            sendBytes.AddRange(ASCIIEncoding.ASCII.GetBytes(expected));
+            sendBytes = COBS.Encode(sendBytes).ToList();
+            sendBytes.Add(0);*/
+
+            Assert.AreEqual(0, writtenEvents.Count);
+
+            tracker.SetEyeDistance(expected);
+
+            Assert.AreEqual(1, writtenEvents.Count);
+
+            Assert.Inconclusive("TODO: Need to compare written bytes with expected");
         }
     }
 }

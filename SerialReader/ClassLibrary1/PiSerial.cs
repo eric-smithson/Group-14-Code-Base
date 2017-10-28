@@ -82,7 +82,8 @@ namespace PiTracker
             {
                 if (disposing)
                 {
-                    com.Dispose();
+                    com?.Close();
+                    com?.Dispose();
                 }
 
                 disposedValue = true;

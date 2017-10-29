@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Management;
 
 namespace PiTracker
 {
@@ -38,7 +39,23 @@ namespace PiTracker
             com = new SerialPort();
             if (s == COMSettings.RPI)
             {
-                com.PortName = "COM6";
+                string piPortName = null;
+                using (var searcher = new ManagementObjectSearcher
+                    ("SELECT * FROM WIN32_SerialPort"))
+                {
+                    string[] portnames = SerialPort.GetPortNames();
+                    var ports = searcher.Get().Cast<ManagementBaseObject>().ToList();
+
+                    // Pi Ports (Ports we can access from SerialPort, and start with "PI USB to Serial"
+                    var piPorts = ports.Where(p => portnames.Contains<string>(p["DeviceID"].ToString())
+                    && p["Caption"].ToString().StartsWith("PI USB to Serial"));
+
+                    // Set 
+                    if (piPorts.Count() > 0)
+                        piPortName = piPorts.First()["DeviceID"].ToString();
+                }
+
+                com.PortName = piPortName ?? throw new Exception("Could not find any connected Pis");
                 com.BaudRate = 115200;
                 com.DataBits = 8;
                 com.Parity = Parity.None;

@@ -28,17 +28,8 @@ namespace PiTracker
         {
             pi = piSerial;
 
-            byte[] a = Enumerable.Range(0, 16).Select(i => (byte) i).ToArray();
-            Debug.WriteLine("writing bytes");
-            pi.Write(a, 0, 16);
-            byte[] by = new byte[16];
-            // Debug.WriteLine("reading bytes");
             // pi.Read(by, 0, 16);
 
-            for (int i = 0; i < 16 ; i++)
-            {
-                // Debug.WriteLine(by[i]);
-            }
 
             /*pi.Write(a, 0, 16);
             byte[] by = new byte[16];
@@ -82,21 +73,26 @@ namespace PiTracker
             if (bytes.Count <= 0) {
                 return;
             }
-            bytes = Consistent_Overhead_Byte_Stuffing.COBS.Decode(bytes).ToList<byte>();
-            foreach(byte by in bytes)
+            List<byte> b_arr;
+            b_arr = Consistent_Overhead_Byte_Stuffing.COBS.Decode(bytes).ToList<byte>();
+            foreach(byte by in b_arr)
             {
-                Console.Write(by);
+                Debug.Write(by);
             }
-            Console.WriteLine();
-            Commands type = (Commands)bytes[0];
-            bytes.RemoveAt(0);
+            if (b_arr.Count <= 0) {
+                Debug.Write("command length 0");
+                return;
+            }
+            Debug.Write("\n");
+            Commands type = (Commands)b_arr[0];
+            b_arr.RemoveAt(0);
             switch (type)
             {
                 case Commands.OutputConsole:
-                    ht.ReceiveOutput(bytes);
+                    ht.ReceiveOutput(b_arr);
                     break;
                 case Commands.UpdatePositionData:
-                    ht.UpdatePosition(bytes);
+                    ht.UpdatePosition(b_arr);
                     break;
                 default:
                     Debug.WriteLine("Command not found");

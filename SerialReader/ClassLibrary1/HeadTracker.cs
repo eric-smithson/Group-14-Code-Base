@@ -8,12 +8,12 @@ namespace PiTracker
 {
     public class HeadTracker
     {
-        // public static HeadTracker Singleton;
+        public static HeadTracker Singleton;
 
         static HeadTracker()
         {
             // Initialize singleton
-            // Singleton = new HeadTracker(new PiSerial());
+            Singleton = new HeadTracker(new PiSerial());
         }
 
         public class PositionDataEventArgs : EventArgs
@@ -55,11 +55,12 @@ namespace PiTracker
         public event EventHandler<OutputEventArgs> Output;
 
         public PiReader piReader;
+        public ISerial serial;
 
-
-        public HeadTracker(ISerial serial)
+        private HeadTracker(ISerial serial)
         {
             piReader = new PiReader(this, serial);
+            this.serial = serial;
         }
 
         public void StartDistortionCalibration(int cameraNumber)

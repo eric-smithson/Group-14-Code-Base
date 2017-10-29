@@ -39,7 +39,8 @@ namespace PiTracker
             com = new SerialPort();
             if (s == COMSettings.RPI)
             {
-                string piPortName = null;
+                // The following code was removed since it is unsupported by mono
+                /*string piPortName = null;
                 using (var searcher = new ManagementObjectSearcher
                     ("SELECT * FROM WIN32_SerialPort"))
                 {
@@ -53,9 +54,9 @@ namespace PiTracker
                     // Set 
                     if (piPorts.Count() > 0)
                         piPortName = piPorts.First()["DeviceID"].ToString();
-                }
+                }*/
 
-                com.PortName = piPortName ?? throw new Exception("Could not find any connected Pis");
+                com.PortName = "COM4" ?? throw new Exception("Could not find any connected Pis");
                 com.BaudRate = 115200;
                 com.DataBits = 8;
                 com.Parity = Parity.None;

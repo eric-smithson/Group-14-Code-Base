@@ -39,7 +39,6 @@ namespace PiTracker
             com = new SerialPort();
             if (s == COMSettings.RPI)
             {
-<<<<<<< Updated upstream
                 string piPortName = null;
                 using (var searcher = new ManagementObjectSearcher
                     ("SELECT * FROM WIN32_SerialPort"))
@@ -57,9 +56,6 @@ namespace PiTracker
                 }
 
                 com.PortName = piPortName ?? throw new Exception("Could not find any connected Pis");
-=======
-                com.PortName = "COM7";
->>>>>>> Stashed changes
                 com.BaudRate = 115200;
                 com.DataBits = 8;
                 com.Parity = Parity.None;

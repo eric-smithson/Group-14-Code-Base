@@ -8,12 +8,12 @@ namespace PiTracker
 {
     public class HeadTracker
     {
-        public static HeadTracker Singleton;
+        // public static HeadTracker Singleton;
 
         static HeadTracker()
         {
             // Initialize singleton
-            Singleton = new HeadTracker(new PiSerial());
+            // Singleton = new HeadTracker(new PiSerial());
         }
 
         public class PositionDataEventArgs : EventArgs

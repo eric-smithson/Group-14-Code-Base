@@ -35,6 +35,11 @@ namespace PiTracker
             Debug.WriteLine("reading bytes");
             pi.Read(by, 0, 16);
 
+            for (int i = 0; i < 16 ; i++)
+            {
+                Debug.WriteLine(by[i]);
+            }
+
             /*pi.Write(a, 0, 16);
             byte[] by = new byte[16];
             pi.Read(by, 0, 16);*/
@@ -72,8 +77,11 @@ namespace PiTracker
                 Thread.Sleep(0);
             }
         }
-    private void ReadCommand(List<byte> bytes)
+        private void ReadCommand(List<byte> bytes)
         {
+            if (bytes.Count <= 0) {
+                return;
+            }
             bytes = Consistent_Overhead_Byte_Stuffing.COBS.Decode(bytes).ToList<byte>();
             foreach(byte by in bytes)
             {

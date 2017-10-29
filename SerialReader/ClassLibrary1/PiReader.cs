@@ -102,7 +102,7 @@ namespace PiTracker
         public void WriteCommand(Commands type, List<byte> data)
         {
             data.Insert(0, (byte)type);
-            data = Consistent_Overhead_Byte_Stuffing.COBS.Decode(data).ToList<byte>();
+            data = Consistent_Overhead_Byte_Stuffing.COBS.Encode(data).ToList<byte>();
             data.Add(0x00);
             pi.Write(data.ToArray(), 0, data.Count);
         }

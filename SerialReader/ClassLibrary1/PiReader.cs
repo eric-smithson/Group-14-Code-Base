@@ -32,12 +32,12 @@ namespace PiTracker
             Debug.WriteLine("writing bytes");
             pi.Write(a, 0, 16);
             byte[] by = new byte[16];
-            Debug.WriteLine("reading bytes");
-            pi.Read(by, 0, 16);
+            // Debug.WriteLine("reading bytes");
+            // pi.Read(by, 0, 16);
 
             for (int i = 0; i < 16 ; i++)
             {
-                Debug.WriteLine(by[i]);
+                // Debug.WriteLine(by[i]);
             }
 
             /*pi.Write(a, 0, 16);
@@ -59,6 +59,7 @@ namespace PiTracker
                 // bytes read in are added to an array list
                 // they are popped off that array list once a command is recognized
                 int read = pi.Read(b, 0, 1);
+                Console.WriteLine(b[0]);
                 if (read == 1)
                 {
                     if (b[0] == 0x00)
@@ -73,7 +74,6 @@ namespace PiTracker
                         bytes.Add(b[0]);
                     }
                 }
-
                 Thread.Sleep(0);
             }
         }

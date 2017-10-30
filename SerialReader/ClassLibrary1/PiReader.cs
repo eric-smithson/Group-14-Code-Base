@@ -16,10 +16,9 @@ namespace PiTracker
         HeadTracker ht;
 
         public enum Commands {
-                                CameraDistortionCalibration = 0x01,
-                                ResetPositional = 0x02,
-                                SetEyeDistance = 0x03,
-                                AddCalibrationPoint = 0x04,
+                                ResetCalibration = 0x01,
+                                SetEyeDistance = 0x04,
+                                AddCalibration = 0x02,
                                 OutputConsole = 0x05,
                                 UpdatePositionData = 0x06,
                              }

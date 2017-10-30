@@ -63,14 +63,14 @@ namespace PiTracker
             this.serial = serial;
         }
 
-        public void StartDistortionCalibration(int cameraNumber)
+        public void ResetCalibration(int cameraNumber)
         {
             piReader.WriteCommand(
-                PiReader.Commands.CameraDistortionCalibration,
+                PiReader.Commands.ResetCalibration,
                 new List<byte>((byte)cameraNumber));
         }
 
-        public void AddCalibrationPoint(Vector3 point, float[] quater) // quater is size 4
+        public void AddCalibration(Vector3 point, float[] quater, float checkerSize, int checkerRows, int checkerColumns) // quater is size 4
         {
             List<byte> b_command = new List<byte>();
 
@@ -81,25 +81,14 @@ namespace PiTracker
             byte[,] send = new byte[quater.Length, 4];
             for (int i = 0; i < quater.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(quater[i]);
-
-                for (int j = 0; j < 4; j++)
-                    send[i, j] = temp[j];
+                b_command.AddRange(BitConverter.GetBytes(quater[i]));
             }
 
-            for (int i = 0; i < send.Length; i++)
-            {
-                byte[] row = Enumerable.Range(0, send.Rank)
-                    .Select(column => send[i, column]).ToArray();
-                b_command.AddRange(row);
-            }
+            b_command.AddRange(BitConverter.GetBytes(checkerSize));
+            b_command.AddRange(BitConverter.GetBytes(checkerRows));
+            b_command.AddRange(BitConverter.GetBytes(checkerColumns));
 
-            piReader.WriteCommand(PiReader.Commands.AddCalibrationPoint, b_command);
-        }
-
-        public void ResetPositionalCalibration()
-        {
-            piReader.WriteCommand(PiReader.Commands.ResetPositional, new List<byte>());
+            piReader.WriteCommand(PiReader.Commands.AddCalibration, b_command);
         }
 
         public long FavoriteNumber()

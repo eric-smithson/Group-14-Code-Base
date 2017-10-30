@@ -44,6 +44,7 @@ namespace PiTracker
         private void Data_Getter(object sender, DoWorkEventArgs e)
         {
             List<byte> bytes = new List<byte>();
+            Thread.CurrentThread.Priority = ThreadPriority.AboveNormal; // Set to highest for latency  
             while(true)
             {
                 // bytes read in are added to an array list

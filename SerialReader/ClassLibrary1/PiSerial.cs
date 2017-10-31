@@ -5,6 +5,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Management;
+using System.Threading;
 
 namespace PiTracker
 {
@@ -29,7 +30,15 @@ namespace PiTracker
 
             com = makeCOM(COMSettings.RPI);
 
-            com.Open();
+            try
+
+            {
+                com.Open();
+            }
+            catch (Exception)
+            {
+
+            }
 
             Debug.WriteLine(com);
         }
@@ -78,7 +87,10 @@ namespace PiTracker
         public int Read(byte[] buffer, int offset, int count)
         {
             if (!com.IsOpen)
+            {
+                Thread.Sleep(1);
                 return 0;
+            }
 
             return com.Read(buffer, offset, count);
         }
@@ -86,7 +98,11 @@ namespace PiTracker
         public void Write(byte[] buffer, int offset, int count)
         {
             if (!com.IsOpen)
-                return;
+            {
+                Thread.Sleep(1);
+                    return;
+            }
+
 
             com.Write(buffer, offset, count);
         }

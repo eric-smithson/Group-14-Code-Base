@@ -13,7 +13,7 @@ namespace PiTracker
     {
         SerialPort com;
 
-        private enum COMSettings
+        public enum COMSettings
         {
             Virtual,
             RPI,
@@ -21,29 +21,31 @@ namespace PiTracker
 
         public PiSerial()
         {
-            OpenCom();
+            OpenCom("COM4", COMSettings.RPI);
         }
 
-        private void OpenCom()
+        public Exception OpenCom(string COMName, COMSettings s)
         {
             Debug.WriteLine("Setting up serial reader");
 
-            com = makeCOM(COMSettings.RPI);
+            com = makeCOM(COMName, s);
 
             try
-
             {
                 com.Open();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Debug.WriteLine(e.Message);
+                return e;
             }
 
             Debug.WriteLine(com);
+
+            return null;
         }
         
-        private SerialPort makeCOM(COMSettings s)
+        private SerialPort makeCOM(string COMName, COMSettings s)
         {
             com = new SerialPort();
             if (s == COMSettings.RPI)
@@ -65,7 +67,7 @@ namespace PiTracker
                         piPortName = piPorts.First()["DeviceID"].ToString();
                 }*/
 
-                com.PortName = "COM4" ?? throw new Exception("Could not find any connected Pis");
+                com.PortName = COMName ?? throw new Exception("Could not find any connected Pis");
                 com.BaudRate = 115200;
                 com.DataBits = 8;
                 com.Parity = Parity.None;
@@ -74,7 +76,7 @@ namespace PiTracker
             }
             if (s == COMSettings.Virtual)
             {
-                com.PortName = "COM4";
+                com.PortName = COMName;
                 com.BaudRate = 115200;
                 com.DataBits = 8;
                 com.Parity = Parity.None;

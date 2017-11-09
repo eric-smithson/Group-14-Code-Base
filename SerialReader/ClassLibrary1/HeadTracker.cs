@@ -77,7 +77,7 @@ namespace PiTracker
                 new List<byte>((byte)cameraNumber));
         }
 
-        public void AddCalibration(Vector3 point, float[] quater, float checkerSize, int checkerRows, int checkerColumns) // quater is size 4
+        public void AddCalibration(Vector3 point, Quaternion rot, float checkerSize, int checkerRows, int checkerColumns) // quater is size 4
         {
             List<byte> b_command = new List<byte>();
 
@@ -85,11 +85,10 @@ namespace PiTracker
             b_command.AddRange(BitConverter.GetBytes(point.y));
             b_command.AddRange(BitConverter.GetBytes(point.z));
 
-            byte[,] send = new byte[quater.Length, 4];
-            for (int i = 0; i < quater.Length; i++)
-            {
-                b_command.AddRange(BitConverter.GetBytes(quater[i]));
-            }
+            b_command.AddRange(BitConverter.GetBytes(rot.w));
+            b_command.AddRange(BitConverter.GetBytes(rot.x));
+            b_command.AddRange(BitConverter.GetBytes(rot.y));
+            b_command.AddRange(BitConverter.GetBytes(rot.z));
 
             b_command.AddRange(BitConverter.GetBytes(checkerSize));
             b_command.AddRange(BitConverter.GetBytes(checkerRows));

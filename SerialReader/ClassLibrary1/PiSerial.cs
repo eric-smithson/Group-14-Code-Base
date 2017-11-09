@@ -13,18 +13,12 @@ namespace PiTracker
     {
         SerialPort com;
 
-        public enum COMSettings
-        {
-            Virtual,
-            RPI,
-        }
-
         public PiSerial()
         {
-            OpenCom("COM4", COMSettings.RPI);
+            OpenCom("COM4", HeadTracker.COMSettings.RPI);
         }
 
-        public Exception OpenCom(string COMName, COMSettings s)
+        public Exception OpenCom(string COMName, HeadTracker.COMSettings s)
         {
             Debug.WriteLine("Setting up serial reader");
 
@@ -45,10 +39,10 @@ namespace PiTracker
             return null;
         }
         
-        private SerialPort makeCOM(string COMName, COMSettings s)
+        private SerialPort makeCOM(string COMName, HeadTracker.COMSettings s)
         {
             com = new SerialPort();
-            if (s == COMSettings.RPI)
+            if (s == HeadTracker.COMSettings.RPI)
             {
                 // The following code was removed since it is unsupported by mono
                 /*string piPortName = null;
@@ -74,7 +68,7 @@ namespace PiTracker
                 com.StopBits = StopBits.One;
 
             }
-            if (s == COMSettings.Virtual)
+            if (s == HeadTracker.COMSettings.Virtual)
             {
                 com.PortName = COMName;
                 com.BaudRate = 115200;

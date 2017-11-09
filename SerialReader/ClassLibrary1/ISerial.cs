@@ -9,5 +9,7 @@ namespace PiTracker
     {
         int Read(byte[] buffer, int offset, int count);
         void Write(byte[] buffer, int offset, int count);
+
+        Exception OpenCom(string COMName, HeadTracker.COMSettings s);
     }
 }

@@ -10,11 +10,18 @@ namespace PiTracker
     {
         public static HeadTracker Singleton;
 
+        public enum COMSettings
+        {
+            Virtual,
+            RPI,
+        }
+
         static HeadTracker()
         {
             // Initialize singleton
             Singleton = new HeadTracker(new PiSerial());
         }
+
 
         public class PositionDataEventArgs : EventArgs
         {

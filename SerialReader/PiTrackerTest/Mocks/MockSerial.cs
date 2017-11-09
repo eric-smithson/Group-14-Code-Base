@@ -52,5 +52,10 @@ namespace PiTrackerTest.Mocks
         {
             readByteBuffer.AddRange(bytesToRead);
         }
+
+        public Exception OpenCom(string COMName, HeadTracker.COMSettings s)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

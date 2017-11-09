@@ -19,7 +19,7 @@ namespace PiTrackerTest
         public void TestPositionUpdate()
         {
             MockSerial serial = new MockSerial();
-            HeadTracker tracker = new HeadTracker(serial);
+            HeadTracker tracker = HeadTracker.Singleton;
             var receivedEvents = new List<HeadTracker.PositionDataEventArgs>();
             tracker.PositionDataUpdate += (sender, e) =>
             {
@@ -54,7 +54,7 @@ namespace PiTrackerTest
         public void TestOutput()
         {
             MockSerial serial = new MockSerial();
-            HeadTracker tracker = new HeadTracker(serial);
+            HeadTracker tracker = HeadTracker.Singleton;
             var outputEvents = new List<HeadTracker.OutputEventArgs>();
             tracker.Output += (sender, e) =>
             {
@@ -82,7 +82,7 @@ namespace PiTrackerTest
         public void TestSetEyeDistance()
         {
             MockSerial serial = new MockSerial();
-            HeadTracker tracker = new HeadTracker(serial);
+            HeadTracker tracker = HeadTracker.Singleton;
             var writtenEvents = new List<MockSerial.BytesWrittenEventArgs>();
             serial.OnBytesWritten += (sender, e) =>
             {
